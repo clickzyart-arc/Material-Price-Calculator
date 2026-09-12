@@ -22,7 +22,7 @@ global.window = global;
 
 const fs = require('fs');
 const path = require('path');
-const themeCode = fs.readFileSync(path.join(__dirname, 'theme.js'), 'utf8');
+const themeCode = fs.readFileSync(path.join(__dirname, '../js/theme.js'), 'utf8');
 eval(themeCode);
 
 console.log("--- 1. Testing Theme Presets ---");

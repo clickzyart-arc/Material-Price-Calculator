@@ -13,7 +13,7 @@ global.localStorage = {
 // Load data.js
 const fs = require('fs');
 const path = require('path');
-const dataCode = fs.readFileSync(path.join(__dirname, 'data.js'), 'utf8');
+const dataCode = fs.readFileSync(path.join(__dirname, '../js/data.js'), 'utf8');
 
 // Evaluate in global context
 global.window = global;
