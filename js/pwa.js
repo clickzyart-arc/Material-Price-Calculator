@@ -73,12 +73,7 @@
     // Handle "Install" button click
     async function triggerInstallFlow() {
       if (!deferredInstallPrompt) {
-        // If iOS Safari or unsupported browser, show helpful instructions
-        if (isIosSafari()) {
-          showIosInstallModal();
-        } else {
-          showToast('📲 To install: Open browser menu (⋮) and select "Add to Home screen" or "Install app"', 'info');
-        }
+        showToast('📲 To install: Open browser menu (⋮) and select "Install app" or "Add to Home screen"', 'info');
         return;
       }
 
@@ -142,26 +137,6 @@
       console.log('[PWA] Running in Standalone App Mode');
       if (installBanner) installBanner.style.display = 'none';
       if (btnHeaderInstall) btnHeaderInstall.style.display = 'none';
-    } else if (isIosSafari() && btnHeaderInstall) {
-      // On iOS Safari, show header button so users can see instructions
-      btnHeaderInstall.style.display = 'inline-flex';
-    }
-  }
-
-  // 3. iOS Safari Helper
-  function isIosSafari() {
-    const ua = window.navigator.userAgent;
-    const isIos = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-    const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
-    return isIos && isSafari;
-  }
-
-  function showIosInstallModal() {
-    const modal = document.getElementById('iosInstallModal');
-    if (modal) {
-      modal.classList.add('active');
-    } else {
-      alert('To install on iPhone/iPad:\n1. Tap the Share button at the bottom of Safari.\n2. Select "Add to Home Screen".');
     }
   }
 
