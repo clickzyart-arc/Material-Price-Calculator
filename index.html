@@ -6,6 +6,12 @@
   <title>Material Price Calculator & Quotation Suite | Advanced Estimator</title>
   <meta name="description" content="Calculate costs for Glass, Acrylic, ACP, WPVC, Canvas, Stone, and Wood with automatic sq. ft conversion, thickness selection, framing, and fabrication extras.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Material Calc">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -19,11 +25,19 @@
         </div>
         <div class="brand-text">
           <h1>Material Price Master & Quotation Suite</h1>
-          <p>
+          <p class="brand-meta">
             <span class="status-dot"></span>
-            Price Date: 01-09-2026 &bull; Real-Time Fabrication Estimator
+            <span>Price Date: 01-09-2026 &bull; Real-Time Estimator</span>
+            <span id="networkStatusBadge" class="network-badge online"><i class="fa-solid fa-circle-check"></i> <span>Online</span></span>
           </p>
         </div>
+      </div>
+
+      <div class="header-right-actions">
+        <button type="button" id="btnHeaderInstall" class="btn-header-install" style="display: none;" title="Install on phone or desktop">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+          <span>Install App</span>
+        </button>
       </div>
 
       <nav class="nav-tabs" aria-label="Main Navigation">
@@ -629,6 +643,62 @@
     </div>
   </div>
 
+  <!-- Floating Mobile PWA Install Banner -->
+  <aside id="pwaInstallBanner" class="pwa-install-banner" aria-label="Install App" style="display: none;">
+    <button type="button" class="pwa-banner-close" id="btnDismissInstall" aria-label="Dismiss banner">&times;</button>
+    <div class="pwa-banner-body">
+      <div class="pwa-banner-icon">
+        <img src="icons/icon-192.png" alt="App Icon" width="46" height="46">
+      </div>
+      <div class="pwa-banner-text">
+        <strong>Install Material Calculator</strong>
+        <p>Add to your home screen. Works 100% offline without internet!</p>
+      </div>
+    </div>
+    <div class="pwa-banner-actions">
+      <button type="button" class="btn btn-secondary btn-sm" id="btnLaterInstall">Later</button>
+      <button type="button" class="btn btn-primary btn-sm" id="btnPromptInstall">
+        <i class="fa-solid fa-download"></i> Install App
+      </button>
+    </div>
+  </aside>
+
+  <!-- iOS Safari Add to Home Screen Instructions Modal -->
+  <div class="modal-backdrop" id="iosInstallModal">
+    <div class="modal-container ios-install-modal-container">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-brands fa-apple"></i>
+          <h3>Install on iPhone / iPad</h3>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="document.getElementById('iosInstallModal').classList.remove('active')">&times;</button>
+      </div>
+      <div class="modal-body ios-instructions-body">
+        <div class="ios-step">
+          <div class="ios-step-num">1</div>
+          <div class="ios-step-text">
+            Tap the <strong>Share</strong> button <i class="fa-solid fa-arrow-up-from-bracket ios-icon"></i> at the bottom of your Safari browser.
+          </div>
+        </div>
+        <div class="ios-step">
+          <div class="ios-step-num">2</div>
+          <div class="ios-step-text">
+            Scroll down the menu and tap <strong>Add to Home Screen</strong> <i class="fa-solid fa-square-plus ios-icon"></i>.
+          </div>
+        </div>
+        <div class="ios-step">
+          <div class="ios-step-num">3</div>
+          <div class="ios-step-text">
+            Tap <strong>Add</strong> at top right. Material Calculator is now installed on your home screen and works 100% offline!
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('iosInstallModal').classList.remove('active')">Got It!</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
@@ -636,5 +706,6 @@
   <script src="js/theme.js"></script>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/pwa.js"></script>
 </body>
 </html>
