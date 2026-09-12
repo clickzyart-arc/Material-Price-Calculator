@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material Price Calculator & Quotation Suite | Advanced Estimator</title>
+  <meta name="description" content="Calculate costs for Glass, Acrylic, ACP, WPVC, Canvas, Stone, and Wood with automatic sq. ft conversion, thickness selection, framing, and fabrication extras.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Header & Navigation -->
+    <header class="site-header">
+      <div class="brand-container">
+        <div class="logo-badge">
+          <i class="fa-solid fa-calculator"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Material Price Master & Quotation Suite</h1>
+          <p>
+            <span class="status-dot"></span>
+            Price Date: 01-09-2026 &bull; Real-Time Fabrication Estimator
+          </p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" aria-label="Main Navigation">
+        <button type="button" class="nav-tab active" id="tabNavCalculator" data-tab="calculator">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Calculator</span>
+        </button>
+        <button type="button" class="nav-tab" id="tabNavPriceMaster" data-tab="price-master">
+          <i class="fa-solid fa-table-list"></i>
+          <span>Rate Card Master</span>
+          <span class="tab-badge" id="rateCardCountBadge">20+</span>
+        </button>
+        <button type="button" class="nav-tab" id="tabNavHistory" data-tab="quote-history">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Saved Quotes</span>
+          <span class="tab-badge" id="savedQuoteCountBadge">0</span>
+        </button>
+        <button type="button" class="nav-tab" id="tabNavTheme" data-tab="theme-studio">
+          <i class="fa-solid fa-palette"></i>
+          <span>Theme & Colors</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- MAIN CONTENT VIEWS -->
+    <main>
+      <!-- ================================================================
+           TAB 1: CALCULATOR & QUOTATION BUILDER
+           ================================================================ -->
+      <section id="viewCalculator" class="tab-content active" aria-labelledby="tabNavCalculator">
+        <div class="calc-grid">
+          
+          <!-- LEFT COLUMN: INPUTS -->
+          <div class="card calc-inputs-card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-sliders"></i>
+                1. Product & Dimensions
+              </h2>
+              <span class="section-label" id="currentUnitLabel">Dimensions in Feet (W &times; H)</span>
+            </div>
+
+            <!-- Product Selection (Cascading Dropdowns) -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="materialCategorySelect">
+                  <span>Product / Material</span>
+                  <span class="sub-text">Category</span>
+                </label>
+                <div class="select-wrapper">
+                  <select id="materialCategorySelect" aria-label="Select Material Category">
+                    <!-- Populated dynamically by data.js -->
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="thicknessSelect">
+                  <span>Thickness / Sub-Variant</span>
+                  <span class="sub-text">Auto-filtered</span>
+                </label>
+                <div class="select-wrapper">
+                  <select id="thicknessSelect" aria-label="Select Thickness or Variant">
+                    <!-- Populated dynamically by app.js based on category -->
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Material Spec Banner (Base Rates Display) -->
+            <div class="material-spec-banner" id="materialSpecBanner" aria-live="polite">
+              <div class="spec-item">
+                <span class="spec-title">Printing</span>
+                <span class="spec-val" id="specPrinting">₹300</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-title">Lamination</span>
+                <span class="spec-val" id="specLamination">₹0</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-title">Material</span>
+                <span class="spec-val" id="specMaterial">₹250</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-title">Varnish</span>
+                <span class="spec-val" id="specVarnish">₹100</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-title">Base Sq.Ft</span>
+                <span class="spec-val" id="specBaseTotal" style="color: var(--accent-emerald);">₹650</span>
+              </div>
+            </div>
+
+            <!-- Dimensions & Unit Selector -->
+            <div class="form-group">
+              <label>
+                <span>Measurement Unit</span>
+                <span class="sub-text">Auto Sq. Ft Conversion</span>
+              </label>
+              <div class="unit-toggle-group" role="group" aria-label="Unit Selection">
+                <button type="button" class="unit-btn" id="unitInchesBtn" data-unit="inches">
+                  <i class="fa-solid fa-ruler-combined"></i> Inches (W &times; H &divide; 144)
+                </button>
+                <button type="button" class="unit-btn active" id="unitFeetBtn" data-unit="feet">
+                  <i class="fa-solid fa-ruler"></i> Feet (W &times; H)
+                </button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="widthInput">
+                  <span>Width (<span class="unit-symbol">ft</span>)</span>
+                </label>
+                <input type="number" id="widthInput" min="0.1" step="0.1" value="2" placeholder="Width in feet">
+              </div>
+
+              <div class="form-group">
+                <label for="heightInput">
+                  <span>Height (<span class="unit-symbol">ft</span>)</span>
+                </label>
+                <input type="number" id="heightInput" min="0.1" step="0.1" value="3" placeholder="Height in feet">
+              </div>
+            </div>
+
+            <!-- Real-Time Dimension Visual Preview -->
+            <div class="dimension-preview-box">
+              <div class="dim-metric">
+                <span class="val" id="displayAreaSqFt">6.00</span>
+                <span class="lbl">Total Sq. Feet</span>
+              </div>
+              <div class="dim-metric">
+                <span class="val" id="displayPerimeterInches">120.0</span>
+                <span class="lbl">Border Running Inches</span>
+              </div>
+              <div class="dim-metric">
+                <span class="val" id="displayAspect">2 : 3</span>
+                <span class="lbl">Aspect Ratio</span>
+              </div>
+            </div>
+
+            <!-- Extra Charges Section -->
+            <div style="margin-top: 1.5rem;">
+              <span class="section-label">2. Dynamic Extra Charges & Fabrication</span>
+              
+              <div class="extras-grid">
+                <!-- Holes Extra (Glass etc) -->
+                <div class="extra-card" id="holesCard">
+                  <div class="extra-card-header">
+                    <span><i class="fa-regular fa-circle-dot" style="color: var(--secondary);"></i> Holes</span>
+                    <label class="switch" for="holesToggle">
+                      <input type="checkbox" id="holesToggle">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="form-row" id="holesInputContainer" style="opacity: 0.5; pointer-events: none;">
+                    <div>
+                      <label for="holesCountInput" style="font-size: 0.75rem;">Qty</label>
+                      <input type="number" id="holesCountInput" min="1" value="4">
+                    </div>
+                    <div>
+                      <label for="holesRateInput" style="font-size: 0.75rem;">₹ / Hole</label>
+                      <input type="number" id="holesRateInput" min="0" value="100">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Frame Extra (₹5 / running inch) -->
+                <div class="extra-card" id="frameCard">
+                  <div class="extra-card-header">
+                    <span><i class="fa-solid fa-border-all" style="color: var(--accent-amber);"></i> Frame Border</span>
+                    <label class="switch" for="frameToggle">
+                      <input type="checkbox" id="frameToggle">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div id="frameInputContainer" style="opacity: 0.5; pointer-events: none;">
+                    <div class="form-row" style="margin-bottom: 0.5rem;">
+                      <div>
+                        <label for="frameRateInput" style="font-size: 0.75rem;">₹ / Run. Inch</label>
+                        <input type="number" id="frameRateInput" min="0" value="5">
+                      </div>
+                      <div>
+                        <label for="frameWastageInput" style="font-size: 0.75rem;">Wastage (in)</label>
+                        <input type="number" id="frameWastageInput" min="0" step="0.5" value="4" placeholder="Extra in">
+                      </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.25); padding: 0.45rem 0.65rem; border-radius: 6px;">
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">Frame Total:</span>
+                      <span id="frameTotalPreview" style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-amber); font-size: 0.95rem;">₹620.00</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Canvas Stretching Extra -->
+                <div class="extra-card" id="stretchingCard">
+                  <div class="extra-card-header">
+                    <span><i class="fa-solid fa-expand" style="color: var(--primary);"></i> Stretching</span>
+                    <label class="switch" for="stretchingToggle">
+                      <input type="checkbox" id="stretchingToggle">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div id="stretchingInputContainer" style="opacity: 0.5; pointer-events: none;">
+                    <label for="stretchingRateInput" style="font-size: 0.75rem;">Labor / Stretching Charge (₹)</label>
+                    <input type="number" id="stretchingRateInput" min="0" value="220">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Price Overrides (Accordioned) -->
+            <button type="button" class="accordion-toggle" id="priceOverrideToggle">
+              <span><i class="fa-solid fa-sliders"></i> Edit Item Rates on-the-fly (Optional Override)</span>
+              <i class="fa-solid fa-chevron-down" id="overrideChevron"></i>
+            </button>
+            <div class="accordion-panel" id="priceOverridePanel">
+              <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1rem;">
+                Adjusting values here overrides the base price for this specific calculation without altering master tables.
+              </p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="overridePrinting">Printing (₹/sq.ft)</label>
+                  <input type="number" id="overridePrinting" min="0">
+                </div>
+                <div class="form-group">
+                  <label for="overrideLamination">Lamination (₹/sq.ft)</label>
+                  <input type="number" id="overrideLamination" min="0">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="overrideMaterial">Material Price (₹/sq.ft)</label>
+                  <input type="number" id="overrideMaterial" min="0">
+                </div>
+                <div class="form-group">
+                  <label for="overrideVarnish">Varnish Price (₹/sq.ft)</label>
+                  <input type="number" id="overrideVarnish" min="0">
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="resetOverrideBtn">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Restore Selected Material Defaults
+              </button>
+            </div>
+
+            <!-- Add to Basket / Clear -->
+            <div style="margin-top: 1.75rem; display: flex; gap: 1rem;">
+              <button type="button" class="btn btn-primary" id="addToBasketBtn" style="flex: 2;">
+                <i class="fa-solid fa-cart-plus"></i> Add Item to Quotation Basket
+              </button>
+              <button type="button" class="btn btn-secondary" id="resetCalcBtn" style="flex: 1;">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: LIVE BREAKDOWN & BASKET -->
+          <div class="card pricing-breakdown-card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-chart-pie"></i>
+                Price Breakdown
+              </h2>
+              <span class="section-label">Live Calculation</span>
+            </div>
+
+            <!-- Hero Price Display -->
+            <div class="price-hero-box">
+              <div class="price-hero-label">Estimated Current Item Total</div>
+              <div class="price-hero-value" id="heroTotalPrice">₹3,900</div>
+              <div class="price-hero-unit" id="heroRateDetail">@ ₹650 / Sq.Ft base</div>
+            </div>
+
+            <!-- Breakdown Table -->
+            <table class="breakdown-table" aria-label="Detailed Calculation Breakdown">
+              <tbody>
+                <tr>
+                  <td>Area Calculation</td>
+                  <td id="breakdownAreaText">6.00 Sq. Ft</td>
+                </tr>
+                <tr>
+                  <td>Base Rate / Sq. Ft</td>
+                  <td id="breakdownBaseRate">₹650.00</td>
+                </tr>
+                <tr>
+                  <td>Material & Print Cost</td>
+                  <td id="breakdownAreaCost">₹3,900.00</td>
+                </tr>
+                <tr id="breakdownHolesRow" style="display: none;">
+                  <td>Holes Charge (<span id="breakdownHolesDetail">4 &times; ₹100</span>)</td>
+                  <td id="breakdownHolesCost">₹400.00</td>
+                </tr>
+                <tr id="breakdownFrameRow" style="display: none;">
+                  <td>Frame Charge (<span id="breakdownFrameDetail">120 in &times; ₹5</span>)</td>
+                  <td id="breakdownFrameCost">₹600.00</td>
+                </tr>
+                <tr id="breakdownStretchingRow" style="display: none;">
+                  <td>Stretching Charge</td>
+                  <td id="breakdownStretchingCost">₹220.00</td>
+                </tr>
+                <tr class="total-row">
+                  <td>Total Price</td>
+                  <td id="breakdownUnitTotal">₹3,900.00</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Quotation Basket / Customer Info -->
+            <div class="basket-section">
+              <div class="card-header" style="padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                <h3 class="card-title" style="font-size: 1rem;">
+                  <i class="fa-solid fa-file-invoice"></i>
+                  Quotation Basket (<span id="basketCountBadge">0</span>)
+                </h3>
+              </div>
+
+              <!-- Customer Info Inputs -->
+              <div class="form-row" style="margin-bottom: 0.85rem;">
+                <div>
+                  <label for="customerNameInput" style="font-size: 0.75rem;">Customer Name</label>
+                  <input type="text" id="customerNameInput" placeholder="e.g. John Doe / Studio">
+                </div>
+                <div>
+                  <label for="customerPhoneInput" style="font-size: 0.75rem;">Contact / Reference</label>
+                  <input type="text" id="customerPhoneInput" placeholder="Phone or Order Ref">
+                </div>
+              </div>
+
+              <!-- Basket Items List -->
+              <div class="basket-list" id="basketItemsList">
+                <div style="text-align: center; color: var(--text-dim); padding: 2rem 0; font-size: 0.85rem;">
+                  <i class="fa-solid fa-basket-shopping" style="font-size: 1.75rem; margin-bottom: 0.5rem; opacity: 0.4;"></i>
+                  <p>Your basket is currently empty.</p>
+                  <p style="font-size: 0.75rem;">Configure an item and click "Add Item to Quotation Basket".</p>
+                </div>
+              </div>
+
+              <!-- Basket Total -->
+              <div id="basketSummaryBox" style="display: none; background: rgba(14, 22, 38, 0.8); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-weight: 600;">Basket Grand Total:</span>
+                  <span id="basketGrandTotal" style="font-family: var(--font-mono); font-size: 1.4rem; font-weight: 800; color: var(--accent-emerald);">₹0.00</span>
+                </div>
+              </div>
+
+              <div class="btn-group">
+                <button type="button" class="btn btn-emerald" id="generateQuoteBtn">
+                  <i class="fa-solid fa-print"></i> View & Print Formal Quotation
+                </button>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button type="button" class="btn btn-secondary btn-sm" id="saveQuoteBtn" style="flex: 1;">
+                    <i class="fa-regular fa-bookmark"></i> Save Quote
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" id="clearBasketBtn" style="flex: 1;">
+                    <i class="fa-regular fa-trash-can"></i> Clear Basket
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================================================================
+           TAB 2: PRICE MASTER / RATE CARD EDITOR
+           ================================================================ -->
+      <section id="viewPriceMaster" class="tab-content" aria-labelledby="tabNavPriceMaster">
+        <div class="card">
+          <div class="price-master-header">
+            <div>
+              <h2 class="card-title">
+                <i class="fa-solid fa-table-cells"></i>
+                Rate Card Master (20+ Materials)
+              </h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                Directly edit any price column below. Changes persist in your browser and automatically update calculations.
+              </p>
+            </div>
+
+            <div class="filter-bar">
+              <input type="text" id="rateSearchInput" placeholder="Search material or thickness..." style="width: 220px;">
+              <select id="rateCategoryFilter" style="width: 160px;">
+                <option value="ALL">All Categories</option>
+                <!-- Populated dynamically -->
+              </select>
+              <button type="button" class="btn btn-primary btn-sm" id="saveRatesBtn">
+                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="resetRatesBtn" title="Restore original Excel rates">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Reset Defaults
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="exportRatesBtn" title="Export as JSON backup">
+                <i class="fa-solid fa-download"></i> Export JSON
+              </button>
+              <label class="btn btn-secondary btn-sm" style="cursor: pointer;" title="Import JSON backup">
+                <i class="fa-solid fa-upload"></i> Import JSON
+                <input type="file" id="importRatesInput" accept=".json" style="display: none;">
+              </label>
+            </div>
+          </div>
+
+          <!-- Responsive Rate Table -->
+          <div class="table-responsive">
+            <table class="rate-table" id="masterRateTable">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Thickness / Variant</th>
+                  <th>Printing (₹)</th>
+                  <th>Lamination (₹)</th>
+                  <th>Material (₹)</th>
+                  <th>Varnish (₹)</th>
+                  <th>Base Total (₹)</th>
+                  <th>Frame Extra (₹/in)</th>
+                  <th>Default Extra / Notes</th>
+                </tr>
+              </thead>
+              <tbody id="masterRateTableBody">
+                <!-- Rows populated dynamically from data.js -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================================================================
+           TAB 3: SAVED QUOTES & INVOICES
+           ================================================================ -->
+      <section id="viewHistory" class="tab-content" aria-labelledby="tabNavHistory">
+        <div class="card">
+          <div class="price-master-header">
+            <div>
+              <h2 class="card-title">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Saved Quotations & Estimates
+              </h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                Review past customer estimates, reprint invoices, or export quotation data.
+              </p>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" id="clearAllHistoryBtn">
+              <i class="fa-regular fa-trash-can"></i> Clear All History
+            </button>
+          </div>
+
+          <div class="quote-history-grid" id="savedQuotesContainer">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           TAB 4: THEME & COLOR STUDIO
+           ================================================================ -->
+      <section id="viewThemeStudio" class="tab-content" aria-labelledby="tabNavTheme">
+        <div class="card">
+          <div class="price-master-header">
+            <div>
+              <h2 class="card-title">
+                <i class="fa-solid fa-palette"></i>
+                Color Studio & Dynamic Theme Customizer
+              </h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                Switch between curated designer palettes (including your custom F6F7EB / E94F37 / 393E41 palette) or customize any color in real-time.
+              </p>
+            </div>
+
+            <div class="filter-bar">
+              <button type="button" class="btn btn-primary btn-sm" id="saveThemeBtn">
+                <i class="fa-solid fa-floppy-disk"></i> Save Current Theme
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="resetThemeBtn" title="Restore default theme">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Reset Defaults
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="copyCssBtn" title="Copy CSS Variables to clipboard">
+                <i class="fa-regular fa-copy"></i> Copy CSS Code
+              </button>
+            </div>
+          </div>
+
+          <!-- SECTION 1: DESIGNER PALETTES -->
+          <div style="margin-bottom: 2rem;">
+            <span class="section-label">1. Curated Designer Palettes (Click to apply)</span>
+            <div class="theme-palette-grid" id="themePresetsContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- SECTION 2: LIVE DYNAMIC COLOR PICKERS -->
+          <div>
+            <span class="section-label">2. Real-Time Custom Color Pickers & Hex Codes</span>
+            <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1rem;">
+              Click any color circle to open the visual color picker or enter your custom 6-digit hex code.
+            </p>
+            <div class="custom-color-grid" id="customColorPickersContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       PRINT / INVOICE PREVIEW MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="quotationModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="modal-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 id="modalTitle" style="font-family: var(--font-heading); color: var(--text-main);">
+          <i class="fa-solid fa-file-invoice"></i> Quotation Preview
+        </h3>
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" class="btn btn-primary btn-sm" id="printSlipBtn">
+            <i class="fa-solid fa-print"></i> Print / Save as PDF
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="closeModalBtn">
+            <i class="fa-solid fa-xmark"></i> Close
+          </button>
+        </div>
+      </div>
+
+      <!-- Clean White Printable Quotation Sheet -->
+      <div class="print-quotation-sheet" id="printableSheet">
+        <div class="sheet-header">
+          <div class="sheet-brand">
+            <h2>PRINT & FABRICATION STUDIO</h2>
+            <p>Premium Digital Printing, Acrylic & Glass Fabrication</p>
+            <p style="font-size: 0.8rem; margin-top: 4px;">Contact: +91 98765 43210 &bull; info@printfabstudio.com</p>
+          </div>
+          <div class="sheet-quote-info">
+            <h3>ESTIMATE / QUOTE</h3>
+            <p><strong>Quote #:</strong> <span id="sheetQuoteNum">EST-2026-001</span></p>
+            <p><strong>Date:</strong> <span id="sheetDate">01-09-2026</span></p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0;">
+          <div>
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 600;">Customer Details:</span>
+            <p style="font-weight: 700; font-size: 1rem; color: #0f172a;" id="sheetCustomerName">Walk-in Customer</p>
+            <p style="font-size: 0.85rem; color: #475569;" id="sheetCustomerPhone">-</p>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 600;">Pricing Standard:</span>
+            <p style="font-size: 0.85rem; color: #475569;">Effective Date: 01-09-2026 Master Rate Sheet</p>
+          </div>
+        </div>
+
+        <!-- Sheet Table -->
+        <table class="sheet-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Item Description</th>
+              <th>Dimensions</th>
+              <th>Area (Sq. Ft)</th>
+              <th>Rate / Sq.Ft</th>
+              <th>Extras (Holes/Frame/Stretching)</th>
+              <th style="text-align: right;">Total (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="sheetTableBody">
+            <!-- Injected by app.js -->
+          </tbody>
+        </table>
+
+        <!-- Totals -->
+        <div class="sheet-totals">
+          <div class="sheet-totals-box">
+            <div class="sheet-totals-row">
+              <span>Subtotal:</span>
+              <span id="sheetSubtotal">₹0.00</span>
+            </div>
+            <div class="sheet-totals-row">
+              <span>GST / Taxes:</span>
+              <span>Extra as applicable</span>
+            </div>
+            <div class="sheet-totals-row grand">
+              <span>Grand Total:</span>
+              <span id="sheetGrandTotal">₹0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; font-size: 0.75rem; color: #94a3b8;">
+          <div>
+            <p><strong>Terms & Conditions:</strong></p>
+            <p>1. Estimate valid for 15 days from issue date.</p>
+            <p>2. 50% advance required to initiate fabrication.</p>
+          </div>
+          <div style="text-align: right; padding-top: 1.5rem;">
+            <p>Authorized Signature</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="theme.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
