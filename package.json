@@ -1,0 +1,17 @@
+{
+  "name": "material-price-calculator",
+  "version": "1.0.0",
+  "description": "Material Price Master & Quotation Suite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node tests/test_calculations.js && node tests/test_theme.js && node tests/test_auth.js"
+  },
+  "keywords": [
+    "material-price-calculator",
+    "quotation-suite"
+  ],
+  "author": "",
+  "license": "ISC"
+}

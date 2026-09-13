@@ -34,6 +34,16 @@
       </div>
 
       <div class="header-right-actions">
+        <!-- Auth Status Container -->
+        <div class="auth-status-container" id="authStatusContainer">
+          <span class="role-badge employee" id="headerRoleBadge" title="Current session role">
+            <i class="fa-solid fa-user"></i> <span>Employee</span>
+          </span>
+          <button type="button" class="btn btn-secondary btn-sm btn-auth" id="btnHeaderAuth" title="Login as Administrator">
+            <i class="fa-solid fa-lock"></i> <span>Admin Login</span>
+          </button>
+        </div>
+
         <button type="button" id="btnHeaderInstall" class="btn-header-install" style="display: none;" title="Install on phone or desktop">
           <i class="fa-solid fa-mobile-screen-button"></i>
           <span>Install App</span>
@@ -152,25 +162,25 @@
                 <label for="widthInput">
                   <span>Width (<span class="unit-symbol">ft</span>)</span>
                 </label>
-                <input type="number" id="widthInput" min="0.1" step="0.1" value="2" placeholder="Width in feet">
+                <input type="number" id="widthInput" min="0.1" step="0.1" value="1" placeholder="Width">
               </div>
 
               <div class="form-group">
                 <label for="heightInput">
                   <span>Height (<span class="unit-symbol">ft</span>)</span>
                 </label>
-                <input type="number" id="heightInput" min="0.1" step="0.1" value="3" placeholder="Height in feet">
+                <input type="number" id="heightInput" min="0.1" step="0.1" value="1" placeholder="Height">
               </div>
             </div>
 
             <!-- Real-Time Dimension Visual Preview -->
             <div class="dimension-preview-box">
               <div class="dim-metric">
-                <span class="val" id="displayAreaSqFt">6.00</span>
-                <span class="lbl">Total Sq. Feet</span>
+                <span class="val" id="displayAreaSqFt">1.00</span>
+                <span class="lbl" id="displayAreaLabel">Total Sq. Feet</span>
               </div>
               <div class="dim-metric">
-                <span class="val" id="displayPerimeterInches">120.0</span>
+                <span class="val" id="displayPerimeterInches">48.0</span>
                 <span class="lbl">Border Running Inches</span>
               </div>
               <div class="dim-metric">
@@ -199,8 +209,8 @@
                       <input type="number" id="holesCountInput" min="1" value="4">
                     </div>
                     <div>
-                      <label for="holesRateInput" style="font-size: 0.75rem;">₹ / Hole</label>
-                      <input type="number" id="holesRateInput" min="0" value="100">
+                      <label for="holesRateInput" style="font-size: 0.75rem;">₹ / Hole <span class="rate-lock-tag"><i class="fa-solid fa-lock"></i> Fixed</span></label>
+                      <input type="number" id="holesRateInput" min="0" value="100" class="rate-price-input" disabled readonly tabindex="-1" title="Fixed rate (Only Administrator can modify)">
                     </div>
                   </div>
                 </div>
@@ -215,19 +225,26 @@
                     </label>
                   </div>
                   <div id="frameInputContainer" style="opacity: 0.5; pointer-events: none;">
+                    <!-- Custom Frame Rate Checkbox for Employee -->
+                    <div class="custom-rate-toggle-row">
+                      <label class="custom-rate-checkbox-label" for="frameCustomRateCheck" id="frameCustomRateLabel">
+                        <input type="checkbox" id="frameCustomRateCheck">
+                        <span><i class="fa-solid fa-pen-to-square"></i> Custom Rate (Client Selection)</span>
+                      </label>
+                    </div>
                     <div class="form-row" style="margin-bottom: 0.5rem;">
                       <div>
-                        <label for="frameRateInput" style="font-size: 0.75rem;">₹ / Run. Inch</label>
-                        <input type="number" id="frameRateInput" min="0" value="5">
+                        <label for="frameRateInput" style="font-size: 0.75rem;">₹ / Run. Inch <span class="rate-lock-tag" id="frameRateLockTag"><i class="fa-solid fa-lock"></i> Fixed</span></label>
+                        <input type="number" id="frameRateInput" min="0" value="5" class="rate-price-input" disabled readonly tabindex="-1" title="Fixed rate (Check 'Custom Rate' to edit)">
                       </div>
                       <div>
                         <label for="frameWastageInput" style="font-size: 0.75rem;">Wastage (in)</label>
-                        <input type="number" id="frameWastageInput" min="0" step="0.5" value="4" placeholder="Extra in">
+                        <input type="number" id="frameWastageInput" min="0" step="0.5" value="6" placeholder="Extra in">
                       </div>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.25); padding: 0.45rem 0.65rem; border-radius: 6px;">
                       <span style="font-size: 0.75rem; color: var(--text-muted);">Frame Total:</span>
-                      <span id="frameTotalPreview" style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-amber); font-size: 0.95rem;">₹620.00</span>
+                      <span id="frameTotalPreview" style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-amber); font-size: 0.95rem;">₹0.00</span>
                     </div>
                   </div>
                 </div>
@@ -242,8 +259,26 @@
                     </label>
                   </div>
                   <div id="stretchingInputContainer" style="opacity: 0.5; pointer-events: none;">
-                    <label for="stretchingRateInput" style="font-size: 0.75rem;">Labor / Stretching Charge (₹)</label>
-                    <input type="number" id="stretchingRateInput" min="0" value="220">
+                    <div class="form-row" style="margin-bottom: 0.5rem;">
+                      <div>
+                        <label for="stretchingRateInput" style="font-size: 0.75rem; margin-bottom: 0;">Rate (₹ / Sq.Ft) <span class="rate-lock-tag"><i class="fa-solid fa-lock"></i> Fixed</span></label>
+                        <input type="number" id="stretchingRateInput" min="0" value="220" placeholder="220" class="rate-price-input" disabled readonly tabindex="-1" title="Fixed rate (Only Administrator can modify)">
+                      </div>
+                      <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                          <label for="stretchingMarginInput" style="font-size: 0.75rem; margin-bottom: 0;">Depth / Margin (in)</label>
+                          <span style="font-size: 0.65rem; color: var(--accent-emerald); font-weight: 600;" title="Adds 2 inches on left, right, top, bottom">+4" W/H</span>
+                        </div>
+                        <input type="number" id="stretchingMarginInput" min="0" step="0.5" value="2" placeholder="2" title="Stretching depth/wrap margin added to all 4 sides">
+                      </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.25); padding: 0.45rem 0.65rem; border-radius: 6px; margin-bottom: 0.4rem;">
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">Stretching Total:</span>
+                      <span id="stretchingTotalPreview" style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-emerald); font-size: 0.95rem;">₹0.00</span>
+                    </div>
+                    <div id="stretchingFormulaNote" style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); background: rgba(0, 0, 0, 0.2); padding: 0.35rem 0.5rem; border-radius: 4px;">
+                      <span id="stretchingCalcSqFt">1.00</span> Sq.Ft &times; ₹<span id="stretchingCalcRate">220</span> = <strong style="color: var(--accent-emerald);">₹<span id="stretchingCalcTotal">220.00</span></strong> added to final bill
+                    </div>
                   </div>
                 </div>
               </div>
@@ -251,31 +286,38 @@
 
             <!-- Dynamic Price Overrides (Accordioned) -->
             <button type="button" class="accordion-toggle" id="priceOverrideToggle">
-              <span><i class="fa-solid fa-sliders"></i> Edit Item Rates on-the-fly (Optional Override)</span>
+              <span>
+                <i class="fa-solid fa-sliders"></i> Edit Item Rates on-the-fly (Optional Override)
+                <span class="admin-only-badge" id="overrideAdminBadge"><i class="fa-solid fa-lock"></i> Admin Only</span>
+              </span>
               <i class="fa-solid fa-chevron-down" id="overrideChevron"></i>
             </button>
             <div class="accordion-panel" id="priceOverridePanel">
+              <div id="overrideEmployeeMsg" style="font-size: 0.78rem; color: var(--accent-amber); margin-bottom: 0.85rem; padding: 0.5rem 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 6px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Employee Mode: Base rates are view-only. Only Administrator can modify or override rates.</span>
+              </div>
               <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1rem;">
                 Adjusting values here overrides the base price for this specific calculation without altering master tables.
               </p>
               <div class="form-row">
                 <div class="form-group">
                   <label for="overridePrinting">Printing (₹/sq.ft)</label>
-                  <input type="number" id="overridePrinting" min="0">
+                  <input type="number" id="overridePrinting" min="0" class="rate-price-input" disabled readonly tabindex="-1">
                 </div>
                 <div class="form-group">
                   <label for="overrideLamination">Lamination (₹/sq.ft)</label>
-                  <input type="number" id="overrideLamination" min="0">
+                  <input type="number" id="overrideLamination" min="0" class="rate-price-input" disabled readonly tabindex="-1">
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label for="overrideMaterial">Material Price (₹/sq.ft)</label>
-                  <input type="number" id="overrideMaterial" min="0">
+                  <input type="number" id="overrideMaterial" min="0" class="rate-price-input" disabled readonly tabindex="-1">
                 </div>
                 <div class="form-group">
                   <label for="overrideVarnish">Varnish Price (₹/sq.ft)</label>
-                  <input type="number" id="overrideVarnish" min="0">
+                  <input type="number" id="overrideVarnish" min="0" class="rate-price-input" disabled readonly tabindex="-1">
                 </div>
               </div>
               <button type="button" class="btn btn-secondary btn-sm" id="resetOverrideBtn">
@@ -306,8 +348,8 @@
 
             <!-- Hero Price Display -->
             <div class="price-hero-box">
-              <div class="price-hero-label">Estimated Current Item Total</div>
-              <div class="price-hero-value" id="heroTotalPrice">₹3,900</div>
+              <div class="price-hero-label">Estimated Final Bill</div>
+              <div class="price-hero-value" id="heroTotalPrice">₹650</div>
               <div class="price-hero-unit" id="heroRateDetail">@ ₹650 / Sq.Ft base</div>
             </div>
 
@@ -316,7 +358,7 @@
               <tbody>
                 <tr>
                   <td>Area Calculation</td>
-                  <td id="breakdownAreaText">6.00 Sq. Ft</td>
+                  <td id="breakdownAreaText">1.00 Sq. Ft</td>
                 </tr>
                 <tr>
                   <td>Base Rate / Sq. Ft</td>
@@ -324,7 +366,7 @@
                 </tr>
                 <tr>
                   <td>Material & Print Cost</td>
-                  <td id="breakdownAreaCost">₹3,900.00</td>
+                  <td id="breakdownAreaCost">₹650.00</td>
                 </tr>
                 <tr id="breakdownHolesRow" style="display: none;">
                   <td>Holes Charge (<span id="breakdownHolesDetail">4 &times; ₹100</span>)</td>
@@ -335,12 +377,12 @@
                   <td id="breakdownFrameCost">₹600.00</td>
                 </tr>
                 <tr id="breakdownStretchingRow" style="display: none;">
-                  <td>Stretching Charge</td>
+                  <td>Stretching Charge (<span id="breakdownStretchingDetail">1.00 Sq.Ft &times; ₹220</span>)</td>
                   <td id="breakdownStretchingCost">₹220.00</td>
                 </tr>
                 <tr class="total-row">
-                  <td>Total Price</td>
-                  <td id="breakdownUnitTotal">₹3,900.00</td>
+                  <td>Total Final Bill</td>
+                  <td id="breakdownUnitTotal">₹650.00</td>
                 </tr>
               </tbody>
             </table>
@@ -408,6 +450,20 @@
            ================================================================ -->
       <section id="viewPriceMaster" class="tab-content" aria-labelledby="tabNavPriceMaster">
         <div class="card">
+          <!-- Admin Access Status Banner -->
+          <div class="admin-notice-banner employee-banner" id="adminNoticeBanner">
+            <div class="banner-icon">
+              <i class="fa-solid fa-lock" id="bannerNoticeIcon"></i>
+            </div>
+            <div class="banner-text">
+              <strong id="bannerNoticeHeading">Rate Card Locked (Employee Mode)</strong>
+              <p id="bannerNoticeText">You can view and search rates. Logging in as Administrator is required to edit rates, add new items, or delete materials.</p>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="btnBannerLogin">
+              <i class="fa-solid fa-shield-halved"></i> Admin Login
+            </button>
+          </div>
+
           <div class="price-master-header">
             <div>
               <h2 class="card-title">
@@ -425,6 +481,9 @@
                 <option value="ALL">All Categories</option>
                 <!-- Populated dynamically -->
               </select>
+              <button type="button" class="btn btn-emerald btn-sm" id="addNewMaterialBtn" title="Add new material to rate card">
+                <i class="fa-solid fa-plus"></i> Add New Item
+              </button>
               <button type="button" class="btn btn-primary btn-sm" id="saveRatesBtn">
                 <i class="fa-solid fa-floppy-disk"></i> Save Changes
               </button>
@@ -454,7 +513,9 @@
                   <th>Varnish (₹)</th>
                   <th>Base Total (₹)</th>
                   <th>Frame Extra (₹/in)</th>
+                  <th>Stretching (₹/sq.ft)</th>
                   <th>Default Extra / Notes</th>
+                  <th style="text-align: center; width: 110px;">Actions</th>
                 </tr>
               </thead>
               <tbody id="masterRateTableBody">
@@ -544,6 +605,179 @@
       </section>
 
     </main>
+  </div>
+
+  <!-- ====================================================================
+       ADMIN LOGIN MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="adminLoginModal" role="dialog" aria-modal="true" aria-labelledby="adminLoginModalTitle">
+    <div class="modal-content" style="max-width: 440px;">
+      <div class="modal-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.85rem;">
+        <h3 id="adminLoginModalTitle" style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.6rem;">
+          <i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i>
+          <span>Administrator Login</span>
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" id="closeAdminLoginModalBtn" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="adminLoginForm" autocomplete="on">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5;">
+          Enter administrator credentials to unlock full editing, adding, and deleting on the Rate Card Master.
+        </p>
+
+        <!-- Error Alert -->
+        <div id="adminLoginError" class="login-error-alert" style="display: none;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span id="adminLoginErrorText">Invalid admin email or password.</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.15rem;">
+          <label for="adminEmailInput">
+            Admin Email
+            <span class="sub-text">admin@calculator.clickzy</span>
+          </label>
+          <input type="email" id="adminEmailInput" name="email" placeholder="admin@calculator.clickzy" required autocomplete="username">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="adminPasswordInput">
+            Password
+            <span class="sub-text">Security credential</span>
+          </label>
+          <div class="password-input-wrapper">
+            <input type="password" id="adminPasswordInput" name="password" placeholder="Enter admin password" required autocomplete="current-password">
+            <button type="button" class="btn-toggle-password" id="btnTogglePassword" aria-label="Toggle password visibility" title="Show/hide password">
+              <i class="fa-solid fa-eye" id="togglePasswordIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 1.15rem;">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelAdminLoginBtn">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary btn-sm" id="submitAdminLoginBtn">
+            <i class="fa-solid fa-lock-open"></i> Login as Admin
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       ADD / EDIT MATERIAL MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="materialModal" role="dialog" aria-modal="true" aria-labelledby="materialModalTitle">
+    <div class="modal-content" style="max-width: 640px;">
+      <div class="modal-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+        <h3 id="materialModalTitle" style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.6rem;">
+          <i class="fa-solid fa-layer-group" style="color: var(--primary);"></i>
+          <span id="materialModalHeadingText">Add New Material</span>
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" id="closeMaterialModalBtn" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="materialForm" autocomplete="off">
+        <input type="hidden" id="materialModalId" value="">
+
+        <!-- Basic Identification -->
+        <div class="form-row" style="margin-bottom: 1.25rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="materialModalCategory">
+              Category
+              <span class="sub-text">Type or select existing</span>
+            </label>
+            <input type="text" id="materialModalCategory" list="materialCategoryDatalist" placeholder="e.g. Glass, Acrylic, ACP" required>
+            <datalist id="materialCategoryDatalist">
+              <!-- Populated dynamically -->
+            </datalist>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="materialModalThickness">
+              Thickness / Variant
+              <span class="sub-text">Specification</span>
+            </label>
+            <input type="text" id="materialModalThickness" placeholder="e.g. 5mm, 10mm, Roll to Roll" required>
+          </div>
+        </div>
+
+        <!-- Section: Base Rate Components -->
+        <div style="margin-bottom: 1rem;">
+          <span class="section-label">Base Rate Components (₹ / Sq.Ft)</span>
+          <div class="form-row" style="margin-bottom: 0.75rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="materialModalPrinting">Printing Rate (₹)</label>
+              <input type="number" id="materialModalPrinting" min="0" step="any" value="0" placeholder="0">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="materialModalLamination">Lamination Rate (₹)</label>
+              <input type="number" id="materialModalLamination" min="0" step="any" value="0" placeholder="0">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="materialModalMaterialPrice">Material Rate (₹)</label>
+              <input type="number" id="materialModalMaterialPrice" min="0" step="any" value="0" placeholder="0">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="materialModalVarnish">Varnish Rate (₹)</label>
+              <input type="number" id="materialModalVarnish" min="0" step="any" value="0" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Base Total Indicator Pill -->
+        <div class="modal-base-total-pill" style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-bottom: 1.25rem;">
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">
+            <i class="fa-solid fa-calculator" style="color: var(--primary); margin-right: 6px;"></i>
+            Calculated Base Total:
+          </span>
+          <span id="materialModalBaseTotalPreview" style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 800; color: var(--accent-emerald);">
+            ₹0.00 / sq.ft
+          </span>
+        </div>
+
+        <!-- Section: Fabrication & Extras Defaults -->
+        <div style="margin-bottom: 1.25rem;">
+          <span class="section-label">Fabrication & Extras Defaults</span>
+          <div class="form-row-3" style="margin-bottom: 0.75rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="materialModalFrame">Frame (₹/in)</label>
+              <input type="number" id="materialModalFrame" min="0" step="any" value="0" placeholder="0">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="materialModalHoleRate">Hole (₹/ea)</label>
+              <input type="number" id="materialModalHoleRate" min="0" step="any" value="0" placeholder="0">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="materialModalStretchingRate">Stretch (₹/sq.ft)</label>
+              <input type="number" id="materialModalStretchingRate" min="0" step="any" value="0" placeholder="0">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="materialModalNotes">
+              Default Extra / Notes
+              <span class="sub-text">Optional notes or remarks</span>
+            </label>
+            <input type="text" id="materialModalNotes" placeholder="e.g. 5 per inch extra frame, 100 per hole">
+          </div>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelMaterialModalBtn">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary btn-sm" id="submitMaterialModalBtn">
+            <i class="fa-solid fa-check"></i> <span id="materialModalSubmitText">Save Material</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ====================================================================

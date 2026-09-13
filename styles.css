@@ -764,14 +764,16 @@ input:checked + .slider:before {
 }
 
 /* Category Badge Tag */
-.category-tag {
+.category-tag,
+.rate-table .category-tag {
   display: inline-block;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: var(--primary-glow);
-  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: transparent !important;
+  color: var(--text-main);
+  padding: 0;
+  border: none;
+  box-shadow: none !important;
 }
 
 /* ==========================================================================
@@ -806,7 +808,7 @@ input:checked + .slider:before {
   border-collapse: collapse;
   text-align: left;
   font-size: 0.88rem;
-  min-width: 900px;
+  min-width: 1060px;
 }
 
 .rate-table th {
@@ -845,6 +847,359 @@ input:checked + .slider:before {
 .table-input:focus {
   border-color: var(--primary);
   background: var(--bg-input);
+}
+
+.table-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  justify-content: center;
+}
+
+.btn-table-action {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-table-edit {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-table-edit:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--bg-input);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+.btn-table-delete {
+  background: rgba(225, 29, 72, 0.1);
+  border: 1px solid rgba(225, 29, 72, 0.25);
+  color: var(--accent-rose);
+}
+
+.btn-table-delete:hover {
+  background: var(--accent-rose);
+  border-color: var(--accent-rose);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(225, 29, 72, 0.4);
+}
+
+@keyframes rowPulse {
+  0% {
+    background-color: rgba(16, 185, 129, 0.35);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.rate-table tr.row-highlight-pulse td {
+  animation: rowPulse 2.5s ease-out;
+}
+
+/* Auth Status Header Badges & Actions */
+.auth-status-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.role-badge.employee {
+  background: rgba(148, 163, 184, 0.15);
+  color: var(--text-muted);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.role-badge.admin {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+/* Admin Notice Banner */
+.admin-notice-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  transition: var(--transition-smooth);
+}
+
+.admin-notice-banner.employee-banner {
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  color: var(--text-main);
+}
+
+.admin-notice-banner.admin-banner {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--text-main);
+}
+
+.admin-notice-banner .banner-icon {
+  font-size: 1.3rem;
+  color: var(--accent-amber);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-notice-banner.admin-banner .banner-icon {
+  color: var(--accent-emerald);
+}
+
+.admin-notice-banner .banner-text {
+  flex: 1;
+}
+
+.admin-notice-banner .banner-text strong {
+  display: block;
+  font-size: 0.92rem;
+  font-family: var(--font-heading);
+  color: var(--text-main);
+}
+
+.admin-notice-banner .banner-text p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Password Toggle & Login Form */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  padding-right: 2.75rem !important;
+}
+
+.btn-toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+}
+
+.btn-toggle-password:hover {
+  color: var(--primary);
+}
+
+.login-error-alert {
+  background: rgba(225, 29, 72, 0.12);
+  border: 1px solid rgba(225, 29, 72, 0.3);
+  color: var(--accent-rose);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.82rem;
+  margin-bottom: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Employee Read-Only Table State */
+body.role-employee .table-input {
+  opacity: 0.8;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.15);
+  border-color: transparent;
+  user-select: all;
+}
+
+body.role-employee .table-input:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+body.role-employee .btn-table-action {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+body.role-employee .admin-only-action {
+  display: none !important;
+}
+
+/* Rate Lock Indicators & Employee Read-Only Inputs in Calculator */
+.rate-lock-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  vertical-align: middle;
+}
+
+.rate-lock-tag.admin-unlocked {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-emerald);
+}
+
+.rate-lock-tag.custom-unlocked {
+  background: rgba(245, 158, 11, 0.18) !important;
+  color: var(--accent-amber) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.custom-rate-toggle-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.45rem;
+}
+
+.custom-rate-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+.custom-rate-checkbox-label:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.custom-rate-checkbox-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--accent-amber);
+  margin: 0;
+}
+
+.custom-rate-checkbox-label.active {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: var(--accent-amber);
+}
+
+.rate-price-input.custom-rate-enabled {
+  background: var(--bg-input) !important;
+  color: var(--text-main) !important;
+  cursor: text !important;
+  border: 1px solid var(--accent-amber) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+.rate-price-input.custom-rate-enabled:focus {
+  border-color: var(--accent-amber) !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) !important;
+}
+
+.rate-price-input:disabled,
+.rate-price-input.rate-locked {
+  background: rgba(0, 0, 0, 0.35) !important;
+  color: var(--text-muted) !important;
+  cursor: not-allowed !important;
+  border: 1px dashed rgba(255, 255, 255, 0.15) !important;
+  opacity: 0.75 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+body.role-admin .rate-price-input {
+  background: var(--bg-input) !important;
+  color: var(--text-main) !important;
+  cursor: text !important;
+  border: 1px solid var(--border-color) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+body.role-admin .rate-price-input:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px var(--primary-glow) !important;
+}
+
+.admin-only-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.admin-only-badge.admin-unlocked {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+body.role-employee #resetOverrideBtn {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* ==========================================================================

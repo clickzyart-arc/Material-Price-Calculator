@@ -17,29 +17,38 @@ A modern, responsive, zero-maintenance web application for calculating material 
   $$\text{Border Running Inches (Perimeter)} = 2 \times (\text{Width} \times 12 + \text{Height} \times 12)$$
 
 ### 3. Dynamic Extra Charges
-- **Holes**: Pre-configured at ₹100 per hole (e.g. for Glass).
-- **Frame**: Additional frame charge of ₹5 per running inch of perimeter (for ACP, WPVC, Canvas).
-- **Stretching**: Canvas labor/stretching charge (default ₹220).
+- **Holes**: Fabrication holes with configurable quantity (rate ₹100 per hole).
+- **Frame**: Additional frame charge of ₹5 per running inch of perimeter + default **6 inches wastage** (for ACP, WPVC, Canvas).
+- **Stretching**: Canvas labor/stretching charge calculated on square footage (Total Sq.Ft $\times$ default ₹220) and added directly to the final bill.
 
-### 4. Dynamic Price Editing (Zero Maintenance)
-- **On-the-Fly Overrides**: Directly adjust Printing, Lamination, Material Price, or Varnish on the calculator card without altering master tables.
-- **Rate Card Master**: A dedicated spreadsheet view of all 20+ materials where any rate can be edited, saved to browser `localStorage`, exported to JSON, or reset to original spreadsheet defaults.
+### 4. Role-Based Access & Rate Security
+- **Employee Mode**: Employees can view all rates and prices, configure dimensions, calculate estimates, manage quotation baskets, and print formal quotation slips. Rates are strictly view-only to prevent unauthorized price changes.
+- **Administrator Mode**: Only authenticated Admins (`admin@calculator.clickzy` / `Clickzy@0850`) can edit, add, or delete rates in the Rate Card Master, or apply on-the-fly price overrides.
 
 ### 5. Multi-Item Quotation & Professional Print Invoices
 - Add multiple products with different dimensions, quantities, and extras to the quotation basket.
 - Generate professional, print/PDF-ready estimates formatted for A4 printing with customer name, contact, itemized breakdown, and terms.
 - Local quotation history for recalling past estimates.
 
-## How to Run
+## How to Run on Localhost
 
-Simply open `index.html` in any web browser (Chrome, Edge, Firefox, Safari), or serve with any static web server:
+### Option 1: Fast Node Server (Recommended)
+In your terminal, run:
 
 ```bash
-# Python
-python -m http.server 3000
+npm start
+```
+or
+```bash
+node server.js
+```
+- Starts a local server at `http://localhost:3000`
+- Automatically opens your default browser on Windows!
 
-# Node.js npx
+### Option 2: Using NPX
+```bash
 npx serve .
 ```
 
-No database or server configuration is required. All data persists reliably in the browser's local storage.
+### Option 3: Direct File Opening
+You can also double-click [index.html](file:///c:/Users/mehul/Documents/Calculator/index.html) to open it directly in Chrome, Edge, or Firefox. (Running via `http://localhost` is recommended for full PWA and Service Worker features).

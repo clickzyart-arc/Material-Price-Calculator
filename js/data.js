@@ -340,12 +340,65 @@ class MaterialDataManager {
     return this.materials.find(item => item.id === id);
   }
 
+  addItem(newItem) {
+    if (!newItem.category || !newItem.thickness) {
+      throw new Error("Category and thickness are required");
+    }
+    const cleanSlug = str => (str || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const baseSlug = `${cleanSlug(newItem.category)}-${cleanSlug(newItem.thickness)}` || `item-${Date.now()}`;
+    let generatedId = newItem.id || baseSlug;
+    let counter = 1;
+    while (this.materials.some(m => m.id === generatedId)) {
+      generatedId = `${baseSlug}-${counter++}`;
+    }
+
+    const itemToAdd = {
+      id: generatedId,
+      category: String(newItem.category).trim(),
+      thickness: String(newItem.thickness).trim(),
+      printing: parseFloat(newItem.printing) || 0,
+      lamination: parseFloat(newItem.lamination) || 0,
+      materialPrice: parseFloat(newItem.materialPrice) || 0,
+      varnish: parseFloat(newItem.varnish) || 0,
+      framePerInch: parseFloat(newItem.framePerInch) || 0,
+      defaultHoleRate: parseFloat(newItem.defaultHoleRate) || 0,
+      defaultStretchingRate: parseFloat(newItem.defaultStretchingRate) || 0,
+      notes: String(newItem.notes || '').trim()
+    };
+
+    this.materials.push(itemToAdd);
+    this.saveMaterials(this.materials);
+    return itemToAdd;
+  }
+
+  deleteItem(id) {
+    const initialLen = this.materials.length;
+    this.materials = this.materials.filter(item => item.id !== id);
+    if (this.materials.length !== initialLen) {
+      this.saveMaterials(this.materials);
+      return true;
+    }
+    return false;
+  }
+
   updateItem(updatedItem) {
     const idx = this.materials.findIndex(item => item.id === updatedItem.id);
     if (idx !== -1) {
-      this.materials[idx] = { ...this.materials[idx], ...updatedItem };
+      this.materials[idx] = {
+        ...this.materials[idx],
+        category: updatedItem.category !== undefined ? String(updatedItem.category).trim() : this.materials[idx].category,
+        thickness: updatedItem.thickness !== undefined ? String(updatedItem.thickness).trim() : this.materials[idx].thickness,
+        printing: updatedItem.printing !== undefined ? (parseFloat(updatedItem.printing) || 0) : this.materials[idx].printing,
+        lamination: updatedItem.lamination !== undefined ? (parseFloat(updatedItem.lamination) || 0) : this.materials[idx].lamination,
+        materialPrice: updatedItem.materialPrice !== undefined ? (parseFloat(updatedItem.materialPrice) || 0) : this.materials[idx].materialPrice,
+        varnish: updatedItem.varnish !== undefined ? (parseFloat(updatedItem.varnish) || 0) : this.materials[idx].varnish,
+        framePerInch: updatedItem.framePerInch !== undefined ? (parseFloat(updatedItem.framePerInch) || 0) : this.materials[idx].framePerInch,
+        defaultHoleRate: updatedItem.defaultHoleRate !== undefined ? (parseFloat(updatedItem.defaultHoleRate) || 0) : this.materials[idx].defaultHoleRate,
+        defaultStretchingRate: updatedItem.defaultStretchingRate !== undefined ? (parseFloat(updatedItem.defaultStretchingRate) || 0) : this.materials[idx].defaultStretchingRate,
+        notes: updatedItem.notes !== undefined ? String(updatedItem.notes).trim() : this.materials[idx].notes
+      };
       this.saveMaterials(this.materials);
-      return true;
+      return this.materials[idx];
     }
     return false;
   }

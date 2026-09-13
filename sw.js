@@ -3,7 +3,7 @@
  * Enables 100% offline calculations, instant loading, and app installation.
  */
 
-const CACHE_NAME = 'mpc-static-v2';
+const CACHE_NAME = 'mpc-static-v11';
 
 const STATIC_ASSETS = [
   './',
